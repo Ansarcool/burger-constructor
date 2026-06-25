@@ -3,14 +3,14 @@
   top: 0;
   right: 0;
   display: flex;
-  background: #4C4CFF;
+  background: #4c4cff;
   border-radius: 16px;
   font-family: 'Iceland';
   font-style: normal;
   font-weight: normal;
   line-height: 24px;
   text-align: center;
-  color: #F2F2F3;
+  color: #f2f2f3;
 }
 
 .default {
