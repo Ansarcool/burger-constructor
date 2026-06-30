@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Preloader } from '../ui/preloader';
+import { Preloader } from '@ui';
 import { IngredientDetailsUI } from '../ui/ingredient-details';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../services/store';

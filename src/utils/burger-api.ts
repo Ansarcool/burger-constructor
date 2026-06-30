@@ -14,18 +14,24 @@ export type TUser = {
 };
 
 export interface TResponse {
-  accessToken: string;
-  refreshToken: string;
+  access_token: string;
+  refresh_token: string;
   success: boolean;
   user: TUser;
 }
-
+export type TNewOrderResponse = {
+  success: boolean;
+  order: {
+    number: number;
+  };
+  name: string;
+};
 export type TLogin = Omit<TRegisterUser, 'name'>;
 
-export type TRefreshRequest = Pick<TResponse, 'refreshToken'>;
+export type TRefreshRequest = Pick<TResponse, 'refresh_token'>;
 
 export function register(registerData: TRegisterUser): Promise<TResponse> {
-  return fetch(`${BASE_URL}/auth/signup`, {
+  return fetch(`${BASE_URL}/auth/register`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -42,17 +48,22 @@ export function refreshRequest(body: TRefreshRequest): Promise<TResponse> {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify({
+      token: body.refresh_token
+    })
   })
     .then((response) => response.json())
     .then((data: TResponse) => {
-      localStorage.setItem('accessToken', data.accessToken);
+      if (data && data.success && data.access_token) {
+        localStorage.setItem('accessToken', data.access_token);
+        localStorage.setItem('refreshToken', data.refresh_token);
+      }
       return data;
     });
 }
 
 export function getUser(accessToken: string): Promise<TResponse> {
-  return fetch(`${BASE_URL}/me`, {
+  return fetch(`${BASE_URL}/user`, {
     headers: {
       Authorization: `Bearer ${accessToken}`
     }
@@ -62,14 +73,15 @@ export function getUser(accessToken: string): Promise<TResponse> {
       if (!data.success) {
         const refreshToken = localStorage.getItem('refreshToken');
         if (refreshToken) {
-          return refreshRequest({ refreshToken });
+          return refreshRequest({ refresh_token: refreshToken }).then(
+            (refreshData) => getUser(refreshData.access_token)
+          );
         }
       }
 
       return data;
     });
 }
-
 export function login(loginData: TLogin): Promise<TResponse> {
   return fetch(`${BASE_URL}/auth/login`, {
     method: 'POST',
@@ -101,4 +113,19 @@ export function getIngredients(): Promise<TIngredientsResponse> {
   return fetch(`${BASE_URL}/ingredients`)
     .then((response) => response.json())
     .then((data: TIngredientsResponse) => data);
+}
+export function createOrderRequest(
+  ingredients: string[],
+  accessToken: string
+): Promise<TNewOrderResponse> {
+  return fetch(`${BASE_URL}/orders`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`
+    },
+    body: JSON.stringify({ ingredients })
+  })
+    .then((response) => response.json())
+    .then((data: TNewOrderResponse) => data);
 }

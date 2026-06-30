@@ -49,8 +49,8 @@ export const authSlice = createSlice({
       .addCase(registerThunk.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
-        localStorage.setItem('accessToken', action.payload.accessToken);
-        localStorage.setItem('refreshToken', action.payload.refreshToken);
+        localStorage.setItem('accessToken', action.payload.access_token);
+        localStorage.setItem('refreshToken', action.payload.refresh_token);
       })
       .addCase(registerThunk.rejected, (state) => {
         state.loading = false;
@@ -63,8 +63,8 @@ export const authSlice = createSlice({
       .addCase(loginThunk.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
-        localStorage.setItem('accessToken', action.payload.accessToken);
-        localStorage.setItem('refreshToken', action.payload.refreshToken);
+        localStorage.setItem('accessToken', action.payload.access_token);
+        localStorage.setItem('refreshToken', action.payload.refresh_token);
       })
       .addCase(loginThunk.rejected, (state) => {
         state.loading = false;
@@ -82,6 +82,7 @@ export const authSlice = createSlice({
       .addCase(getUserThunk.rejected, (state) => {
         state.loading = false;
         state.error = 'Ошибка';
+        state.user = null;
       });
   }
 });

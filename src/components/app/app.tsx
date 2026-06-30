@@ -1,11 +1,17 @@
-import { ConstructorPage, Register } from '@pages';
+import { ConstructorPage, Login, NotFound404, Register } from '@pages';
 import '../../index.css';
 import styles from './app.module.css';
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { AppHeader, FeedInfo, IngredientDetails, Modal } from '@components';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  AppHeader,
+  FeedInfo,
+  IngredientDetails,
+  Modal,
+  ProfileMenu
+} from '@components';
 import { getIngredientsThunk } from '../../slices/ingredientsSlice';
-import { AppDispatch } from '../../services/store';
+import { AppDispatch, RootState } from '../../services/store';
 import { getUserThunk } from '../../slices/slice';
 import {
   Navigate,
@@ -31,12 +37,10 @@ const App = () => {
   }
   useEffect(() => {
     dispatch(getIngredientsThunk());
-  }, []);
-  useEffect(() => {
-    if (accessToken) {
+    if (accessToken && accessToken !== 'undefined') {
       dispatch(getUserThunk(accessToken));
     }
-  }, [dispatch]);
+  }, []);
 
   function handleCloseModal() {
     navigate(-1);
@@ -52,11 +56,15 @@ const App = () => {
           <>
             <Route
               path='/profile'
-              element={<Navigate to='/profile/register' replace />}
+              element={<Navigate to='/register' replace />}
             />
-            <Route path='/profile/register' element={<Register />} />
+            <Route path='/register' element={<Register />} />
           </>
         )}
+        {accessToken && refreshToken && (
+          <Route path='/profile' element={<ProfileMenu />} />
+        )}
+        <Route path='/login' element={<Login />} />
       </Routes>
       {background && (
         <Routes>
