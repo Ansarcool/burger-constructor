@@ -1,9 +1,11 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 
 import { TOrder } from '@utils-types';
 import { FeedInfoUI } from '../ui/feed-info';
-import { RootState } from '../../services/store';
+import { AppDispatch, RootState } from '../../services/store';
 import { useDispatch, useSelector } from 'react-redux';
+import { getOrdersThunk } from '../../slices/orderSlice';
+
 const getOrders = (orders: TOrder[], status: string): number[] =>
   orders
     .filter((item) => item.status === status)
@@ -12,6 +14,10 @@ const getOrders = (orders: TOrder[], status: string): number[] =>
 
 export const FeedInfo: FC = () => {
   /** TODO: взять переменные из стора */
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    dispatch(getOrdersThunk());
+  }, []);
   const orders = useSelector((state: RootState) => state.order.orders);
   const feed = useSelector((state: RootState) => ({
     total: state.order.total,

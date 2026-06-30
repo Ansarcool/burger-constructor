@@ -17,7 +17,7 @@ export const constructorSlice = createSlice({
         ...action.payload,
         id: crypto.randomUUID()
       };
-      if ((item.type = 'bun')) {
+      if (item.type === 'bun') {
         state.bun = item;
       } else {
         state.ingredients.push(item);
@@ -27,23 +27,38 @@ export const constructorSlice = createSlice({
       state: TConstructorState,
       action: PayloadAction<string>
     ) => {
-      if (state.bun?.id === action.payload) {
-        state.bun = null;
-      } else {
-        state.ingredients = state.ingredients.filter(
-          (i) => i.id !== action.payload
-        );
-      }
+      state.ingredients = state.ingredients.filter(
+        (i) => i.id !== action.payload
+      );
     },
-    resetIngredients: (
-      state: TConstructorState,
-      action: PayloadAction<string>
-    ) => {
-      state.bun = null;
-      state.ingredients = [];
+    moveIngredientUp: (state, action: PayloadAction<number>) => {
+      const index = action.payload;
+
+      if (index === 0) {
+        return;
+      }
+
+      const currentItem = state.ingredients[index];
+      const prevItem = state.ingredients[index - 1];
+
+      state.ingredients[index - 1] = currentItem;
+      state.ingredients[index] = prevItem;
+    },
+    moveIngredientDown: (state, action: PayloadAction<number>) => {
+      const index = action.payload;
+
+      const currentItem = state.ingredients[index];
+      const prevItem = state.ingredients[index + 1];
+
+      state.ingredients[index + 1] = currentItem;
+      state.ingredients[index] = prevItem;
     }
   }
 });
-export const { addIngredient, removeIngredients, resetIngredients } =
-  constructorSlice.actions;
+export const {
+  addIngredient,
+  removeIngredients,
+  moveIngredientUp,
+  moveIngredientDown
+} = constructorSlice.actions;
 export default constructorSlice.reducer;

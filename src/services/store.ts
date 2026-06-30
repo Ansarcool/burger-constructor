@@ -13,7 +13,7 @@ export const rootReducer = combineReducers({
   auth: authReducer,
   order: orderReducer,
   ingredients: ingredientReducer,
-  constructor: constructorReducer
+  burgerConstructor: constructorReducer
 });
 export const store = configureStore({
   reducer: rootReducer,

@@ -22,7 +22,7 @@ export const getUserThunk = createAsyncThunk(
   (accessToken: string) => getUser(accessToken)
 );
 type AuthState = {
-  user?: TUser;
+  user?: TUser | null;
   loading: boolean;
   error?: string;
 };
@@ -45,8 +45,6 @@ export const authSlice = createSlice({
     builder
       .addCase(registerThunk.pending, (state) => {
         state.loading = true;
-        state.user = undefined;
-        state.error = undefined;
       })
       .addCase(registerThunk.fulfilled, (state, action) => {
         state.loading = false;
@@ -60,7 +58,6 @@ export const authSlice = createSlice({
       })
       .addCase(loginThunk.pending, (state) => {
         state.loading = true;
-        state.user = undefined;
         state.error = undefined;
       })
       .addCase(loginThunk.fulfilled, (state, action) => {
@@ -76,7 +73,6 @@ export const authSlice = createSlice({
 
       .addCase(getUserThunk.pending, (state) => {
         state.loading = true;
-        state.user = undefined;
         state.error = undefined;
       })
       .addCase(getUserThunk.fulfilled, (state, action) => {

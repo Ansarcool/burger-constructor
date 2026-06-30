@@ -1,10 +1,6 @@
 export const BASE_URL = 'https://practicetasks.kz/burger-constructor';
-import type {
-  TOrdersData,
-  TIngredient,
-  TConstructorIngredient,
-  TOrder
-} from '@utils-types';
+import type { TOrdersData, TOrder } from '@utils-types';
+import { type TIngredientsResponse } from '../slices/ingredientsSlice';
 
 export type TRegisterUser = {
   email: string;
@@ -41,7 +37,7 @@ export function register(registerData: TRegisterUser): Promise<TResponse> {
 }
 
 export function refreshRequest(body: TRefreshRequest): Promise<TResponse> {
-  return fetch(`${BASE_URL}/auth/refresh`, {
+  return fetch(`${BASE_URL}/auth/token`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -100,4 +96,9 @@ export function getOrderByNum(orderId: number): Promise<TOrder> {
   return fetch(`${BASE_URL}/orders/${orderId}`)
     .then((response) => response.json())
     .then((data: TOrderResponse) => data.orders[0]);
+}
+export function getIngredients(): Promise<TIngredientsResponse> {
+  return fetch(`${BASE_URL}/ingredients`)
+    .then((response) => response.json())
+    .then((data: TIngredientsResponse) => data);
 }

@@ -8,7 +8,9 @@ export const BurgerConstructor: FC = () => {
   /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
   const dispatch = useDispatch<AppDispatch>();
 
-  const constructorItems = useSelector((state: RootState) => state.constructor);
+  const constructorItems = useSelector(
+    (state: RootState) => state.burgerConstructor
+  );
   const orderRequest = useSelector(
     (state: RootState) => state.order.orderRequest
   );
@@ -22,10 +24,10 @@ export const BurgerConstructor: FC = () => {
   const price = useMemo(
     () =>
       (constructorItems.bun ? constructorItems.bun.price * 2 : 0) +
-      constructorItems.ingredients.reduce(
+      (constructorItems.ingredients?.reduce(
         (s: number, v: TConstructorIngredient) => s + v.price,
         0
-      ),
+      ) || 0),
     [constructorItems]
   );
   return (
