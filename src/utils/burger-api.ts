@@ -12,7 +12,13 @@ export type TUser = {
   email: string;
   name: string;
 };
-
+export type TSuccessResponse = {
+  success: boolean;
+};
+export type TResetPassword = {
+  newPassword: string;
+  token: string;
+};
 export interface TResponse {
   access_token: string;
   refresh_token: string;
@@ -27,7 +33,7 @@ export type TNewOrderResponse = {
   name: string;
 };
 export type TLogin = Omit<TRegisterUser, 'name'>;
-
+export type TUserEmail = Omit<TUser, 'name'>;
 export type TRefreshRequest = Pick<TResponse, 'refresh_token'>;
 
 export function register(registerData: TRegisterUser): Promise<TResponse> {
@@ -52,34 +58,44 @@ export function refreshRequest(body: TRefreshRequest): Promise<TResponse> {
       token: body.refresh_token
     })
   })
-    .then((response) => response.json())
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error('Ошибка при обновлении токена на сервере');
+    })
     .then((data: TResponse) => {
       if (data && data.success && data.access_token) {
         localStorage.setItem('accessToken', data.access_token);
         localStorage.setItem('refreshToken', data.refresh_token);
+        return data;
       }
-      return data;
+      throw new Error('Не удалось обновить токен');
     });
 }
 
 export function getUser(accessToken: string): Promise<TResponse> {
-  return fetch(`${BASE_URL}/user`, {
+  return fetch(`${BASE_URL}/auth/user`, {
+    method: 'GET',
     headers: {
-      Authorization: `Bearer ${accessToken}`
+      'Content-Type': 'application/json',
+      Authorization: accessToken
     }
   })
-    .then((response) => response.json())
-    .then((data: TResponse) => {
-      if (!data.success) {
-        const refreshToken = localStorage.getItem('refreshToken');
-        if (refreshToken) {
-          return refreshRequest({ refresh_token: refreshToken }).then(
-            (refreshData) => getUser(refreshData.access_token)
-          );
-        }
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
       }
-
-      return data;
+      throw new Error('jwt expired');
+    })
+    .catch((err) => {
+      const refreshToken = localStorage.getItem('refreshToken');
+      if (refreshToken && err.message === 'jwt expired') {
+        return refreshRequest({ refresh_token: refreshToken }).then(
+          (refreshData) => getUser(refreshData.access_token)
+        );
+      }
+      throw err;
     });
 }
 export function login(loginData: TLogin): Promise<TResponse> {
@@ -90,7 +106,12 @@ export function login(loginData: TLogin): Promise<TResponse> {
     },
     body: JSON.stringify(loginData)
   })
-    .then((res) => res.json())
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      throw new Error('incorrect email or password');
+    })
     .then((data: TResponse) => data);
 }
 
@@ -128,4 +149,42 @@ export function createOrderRequest(
   })
     .then((response) => response.json())
     .then((data: TNewOrderResponse) => data);
+}
+export function forgotPassword({
+  email
+}: TUserEmail): Promise<TSuccessResponse> {
+  return fetch(`${BASE_URL}/password-reset`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ email })
+  })
+    .then((response) => response.json())
+    .then((data: TSuccessResponse) => data);
+}
+export function resetPassword({
+  newPassword,
+  token
+}: TResetPassword): Promise<TSuccessResponse> {
+  return fetch(`${BASE_URL}/password-reset/reset`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ password: newPassword, token })
+  })
+    .then((response) => response.json())
+    .then((data: TSuccessResponse) => data);
+}
+export function getUserOrders(accessToken: string): Promise<TOrdersData> {
+  return fetch(`${BASE_URL}/orders`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: accessToken
+    }
+  })
+    .then((response) => response.json())
+    .then((data: TOrdersData) => data);
 }

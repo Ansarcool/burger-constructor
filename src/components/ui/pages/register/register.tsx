@@ -5,15 +5,15 @@ import { Link } from 'react-router-dom';
 import { RegisterUIProps } from './type';
 
 export const RegisterUI: FC<RegisterUIProps> = ({
-  errorText,
-  email,
-  setEmail,
-  handleSubmit,
-  password,
-  setPassword,
-  userName,
-  setUserName
-}) => (
+                                                  errorText,
+                                                  email,
+                                                  setEmail,
+                                                  handleSubmit,
+                                                  password,
+                                                  setPassword,
+                                                  userName,
+                                                  setUserName
+                                                }) => (
   <main className={styles.container}>
     <div className={`pt-6 ${styles.wrapCenter}`}>
       <h3 className='pb-6 text text_type_main-medium'>Регистрация</h3>

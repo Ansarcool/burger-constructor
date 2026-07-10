@@ -1,11 +1,19 @@
 import { ProfileOrdersUI } from '@ui-pages';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../services/store';
+import { AppDispatch, RootState, useDispatch } from '../../services/store';
+import { getUserOrdersThunk } from '../../slices/slice';
 
 export const ProfileOrders: FC = () => {
   /** TODO: взять переменную из стора */
   // const orders: TOrder[] = [];
-  const orders = useSelector((state: RootState) => state.order.orders);
+  const accesstoken = localStorage.getItem('accessToken');
+  const dispatch = useDispatch();
+  const orders = useSelector((state: RootState) => state.auth.userOrders) || [];
+  useEffect(() => {
+    if (accesstoken) {
+      dispatch(getUserOrdersThunk(accesstoken));
+    }
+  }, [dispatch]);
   return <ProfileOrdersUI orders={orders} />;
 };

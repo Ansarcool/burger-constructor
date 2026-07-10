@@ -3,6 +3,8 @@ import authReducer from '../slices/slice';
 import orderReducer from '../slices/orderSlice';
 import ingredientReducer from '../slices/ingredientsSlice';
 import constructorReducer from '../slices/constructorSlice';
+import createOrderReducer from '../slices/createOrderSlice';
+import passwordReducer from '../slices/resetPassword';
 import {
   TypedUseSelectorHook,
   useDispatch as dispatchHook,
@@ -13,7 +15,9 @@ export const rootReducer = combineReducers({
   auth: authReducer,
   order: orderReducer,
   ingredients: ingredientReducer,
-  burgerConstructor: constructorReducer
+  burgerConstructor: constructorReducer,
+  createOrder: createOrderReducer,
+  password: passwordReducer
 });
 export const store = configureStore({
   reducer: rootReducer,
