@@ -3,14 +3,11 @@ import {
   getUser,
   register,
   login,
-  forgotPassword,
   type TRegisterUser,
   type TUser,
-  type TLogin,
-  type TUserEmail,
-  getUserOrders
+  type TLogin
 } from '@api';
-import { TOrder } from '@utils-types';
+
 export const registerThunk = createAsyncThunk(
   'auth/register',
   (data: TRegisterUser) => register(data)
@@ -24,26 +21,14 @@ export const getUserThunk = createAsyncThunk(
   'auth/user',
   (accessToken: string) => getUser(accessToken)
 );
-export const forgotPasswordThunk = createAsyncThunk(
-  'auth/forgotPassword',
-  (data: TUserEmail) => forgotPassword(data)
-);
-export const getUserOrdersThunk = createAsyncThunk(
-  'auth/getUserOrders',
-  (accessToken: string) => getUserOrders(accessToken)
-);
 type AuthState = {
   user?: TUser | null;
   loading: boolean;
   error?: string;
-  passwordResetRequest: boolean;
-  userOrders: TOrder[];
 };
 
 const initialState: AuthState = {
-  loading: false,
-  passwordResetRequest: false,
-  userOrders: []
+  loading: false
 };
 
 export const authSlice = createSlice({
@@ -98,32 +83,6 @@ export const authSlice = createSlice({
         state.loading = false;
         state.error = 'Ошибка';
         state.user = null;
-      })
-      .addCase(forgotPasswordThunk.pending, (state) => {
-        state.loading = true;
-        state.error = undefined;
-        state.passwordResetRequest = false;
-      })
-      .addCase(forgotPasswordThunk.fulfilled, (state) => {
-        state.loading = false;
-        state.passwordResetRequest = true;
-      })
-      .addCase(forgotPasswordThunk.rejected, (state, action) => {
-        state.loading = false;
-        state.passwordResetRequest = false;
-        state.error = action.error.message;
-      })
-      .addCase(getUserOrdersThunk.pending, (state) => {
-        state.loading = true;
-        state.error = undefined;
-      })
-      .addCase(getUserOrdersThunk.fulfilled, (state, action) => {
-        state.loading = false;
-        state.userOrders = action.payload.orders;
-      })
-      .addCase(getUserOrdersThunk.rejected, (state) => {
-        state.loading = false;
-        state.error = 'Ошибка';
       });
   }
 });

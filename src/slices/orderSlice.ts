@@ -15,7 +15,6 @@ export const createOrderRequestThunk = createAsyncThunk(
     createOrderRequest(orderData.ingredients, orderData.token)
 );
 type TOrderState = {
-  success: boolean;
   orders: TOrder[];
   total: number;
   totalToday: number;
@@ -26,7 +25,6 @@ type TOrderState = {
 };
 
 const initialState: TOrderState = {
-  success: false,
   orders: [],
   total: 0,
   totalToday: 0,
@@ -54,6 +52,18 @@ export const orderSlice = createSlice({
       .addCase(getOrdersThunk.rejected, (state) => {
         state.orderRequest = false;
         state.error = 'Не удалось загрузить заказы';
+      })
+      .addCase(createOrderRequestThunk.pending, (state) => {
+        state.orderRequest = true; // включаем спиннер загрузки
+        state.error = undefined;
+      })
+      .addCase(createOrderRequestThunk.fulfilled, (state, action) => {
+        state.orderRequest = false;
+        state.orderNumber = action.payload.order.number;
+      })
+      .addCase(createOrderRequestThunk.rejected, (state) => {
+        state.orderRequest = false;
+        state.error = 'Ошибка при оформлении заказа';
       });
   }
 });

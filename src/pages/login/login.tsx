@@ -18,7 +18,7 @@ export const Login: FC = () => {
         navigate('/', { replace: true });
       })
       .catch((error) => {
-        console.error('Ошибка авторизации:', error);
+        console.error('Ошибка при входе:', error);
       });
   };
 

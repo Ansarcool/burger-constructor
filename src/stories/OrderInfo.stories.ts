@@ -39,8 +39,8 @@ export const DefaultOrderInfo: Story = {
       _id: '233',
       status: 'ready',
       name: 'Order',
-      created_at: '',
-      updated_at: '',
+      createdAt: '',
+      updatedAt: '',
       number: 2,
       ingredients: ['Булка', 'Начинка']
     }

@@ -20,14 +20,13 @@ export type TOrder = {
   _id: string;
   status: string;
   name: string;
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
   number: number;
   ingredients: string[];
 };
 
 export type TOrdersData = {
-  succses: boolean;
   orders: TOrder[];
   total: number;
   totalToday: number;

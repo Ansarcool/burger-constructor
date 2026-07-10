@@ -4,14 +4,14 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../services/store';
 
 export const OrderDetail: FC = () => {
-  const orderSuccess = useSelector(
-    (state: RootState) => state.createOrder.success
+  const orderRequest = useSelector(
+    (state: RootState) => state.order.orderRequest
   );
   const orderNumber = useSelector(
-    (state: RootState) => state.createOrder.order.number
+    (state: RootState) => state.order.orderNumber
   );
 
-  if (!orderSuccess) {
+  if (orderRequest) {
     return <Preloader />;
   }
   if (!orderNumber) {
