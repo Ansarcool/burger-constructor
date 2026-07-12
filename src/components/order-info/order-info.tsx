@@ -2,29 +2,26 @@ import { FC, useMemo } from 'react';
 import { Preloader } from '@ui';
 import { OrderInfoUI } from '@ui';
 import { TIngredient } from '@utils-types';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../services/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../services/store';
+import { useParams } from 'react-router-dom';
 
 export const OrderInfo: FC = () => {
   /** TODO: взять переменные orderData и ingredients из стора */
-  // const orderData = {
-  //   createdAt: '',
-  //   ingredients: [],
-  //   _id: '',
-  //   status: '',
-  //   name: '',
-  //   updatedAt: 'string',
-  //   number: 0
-  // };
-
-  // const ingredients: TIngredient[] = [];
+  const { id } = useParams();
+  const dispatch = useDispatch<AppDispatch>();
   const ingredients = useSelector(
     (state: RootState) => state.ingredients.ingredients
   );
-  const orderData = useSelector(
-    (state: RootState) => state.order.orderModalData
-  );
-  /* Готовим данные для отображения */
+  const orders = useSelector((state: RootState) => state.order.orders);
+  const numericId = Number(id);
+  if (isNaN(numericId)) {
+    return <p>Некорректный id</p>;
+  }
+  const orderData = orders.find((order) => order.number === numericId);
+  if (!orderData) {
+    return <p>Заказ с номером {numericId} не найден</p>;
+  }
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) return null;
 

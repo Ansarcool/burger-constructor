@@ -13,11 +13,26 @@ import {
 import { TOrder } from '@utils-types';
 export const registerThunk = createAsyncThunk(
   'auth/register',
-  (data: TRegisterUser) => register(data)
+  async (registerData: TRegisterUser, { rejectWithValue }) => {
+    try {
+      const data = await register(registerData);
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
 );
 
-export const loginThunk = createAsyncThunk('auth/login', (data: TLogin) =>
-  login(data)
+export const loginThunk = createAsyncThunk(
+  'auth/login',
+  async (loginData: TLogin, { rejectWithValue }) => {
+    try {
+      const data = await login(loginData);
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
 );
 
 export const getUserThunk = createAsyncThunk(

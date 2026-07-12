@@ -43,9 +43,14 @@ export function register(registerData: TRegisterUser): Promise<TResponse> {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(registerData)
-  })
-    .then((response) => response.json())
-    .then((data: TResponse) => data);
+  }).then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+    return res.json().then((errData) => {
+      throw new Error(errData.message || 'Ошибка регистрации');
+    });
+  });
 }
 
 export function refreshRequest(body: TRefreshRequest): Promise<TResponse> {
@@ -110,7 +115,9 @@ export function login(loginData: TLogin): Promise<TResponse> {
       if (res.ok) {
         return res.json();
       }
-      throw new Error('incorrect email or password');
+      return res.json().then((errData) => {
+        throw new Error(errData.message || 'Что-то пошло не так');
+      });
     })
     .then((data: TResponse) => data);
 }

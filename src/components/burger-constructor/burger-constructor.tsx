@@ -3,7 +3,7 @@ import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../services/store';
-import { createOrderRequestThunk } from '../../slices/orderSlice';
+import { createOrderRequestThunk } from '../../slices/createOrderSlice';
 import { resetIngredients } from '../../slices/constructorSlice';
 export const BurgerConstructor: FC = () => {
   /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */

@@ -4,10 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../../services/store';
 import { loginThunk } from '../../slices/slice';
 import { useNavigate } from 'react-router-dom';
+import { experimental_serverChannel } from '@storybook/addon-onboarding/dist/preset';
 
 export const Login: FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const handleSubmit = (e: SyntheticEvent) => {
@@ -17,14 +19,18 @@ export const Login: FC = () => {
       .then(() => {
         navigate('/', { replace: true });
       })
-      .catch((error) => {
-        console.error('Ошибка авторизации:', error);
+      .catch((serverError) => {
+        if (serverError === 'incorrect email or password') {
+          setErrorMsg('Неверный email или пароль, либо поля не заполнены');
+        } else {
+          setErrorMsg(serverError || 'Произошла ошибка при входе');
+        }
       });
   };
 
   return (
     <LoginUI
-      errorText=''
+      errorText={errorMsg}
       email={email}
       setEmail={setEmail}
       password={password}

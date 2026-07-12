@@ -1,5 +1,6 @@
 import {
   ConstructorPage,
+  Feed,
   ForgotPassword,
   Login,
   NotFound404,
@@ -16,6 +17,7 @@ import {
   FeedInfo,
   IngredientDetails,
   Modal,
+  OrderInfo,
   OrdersList,
   ProfileMenu
 } from '@components';
@@ -73,7 +75,7 @@ const App = () => {
       )}
       <Routes location={background || location}>
         <Route path='/' element={<ConstructorPage />} />
-        <Route path='/orders/all' element={<FeedInfo />} />
+        <Route path='/feed' element={<Feed />} />
         <Route
           path='/profile'
           element={user ? <ProfileMenu /> : <Navigate to='/login' replace />}
@@ -110,6 +112,14 @@ const App = () => {
             element={
               <Modal title='Детали ингредиента' onClose={handleCloseModal}>
                 <IngredientDetails />
+              </Modal>
+            }
+          />
+          <Route
+            path='/feed/:id'
+            element={
+              <Modal title='Детали ингредиента' onClose={handleCloseModal}>
+                <OrderInfo />
               </Modal>
             }
           />

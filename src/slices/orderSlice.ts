@@ -9,11 +9,6 @@ export const getOrderByNumThunk = createAsyncThunk(
   'orders/getByNum',
   (orderId: number) => getOrderByNum(orderId)
 );
-export const createOrderRequestThunk = createAsyncThunk(
-  'orders/create',
-  (orderData: { ingredients: string[]; token: string }) =>
-    createOrderRequest(orderData.ingredients, orderData.token)
-);
 type TOrderState = {
   success: boolean;
   orders: TOrder[];
@@ -54,6 +49,18 @@ export const orderSlice = createSlice({
       .addCase(getOrdersThunk.rejected, (state) => {
         state.orderRequest = false;
         state.error = 'Не удалось загрузить заказы';
+      })
+      .addCase(getOrderByNumThunk.pending, (state) => {
+        state.orderRequest = true;
+        state.error = undefined;
+      })
+      .addCase(getOrderByNumThunk.fulfilled, (state, action) => {
+        state.orderRequest = false;
+        state.orderModalData = action.payload;
+      })
+      .addCase(getOrderByNumThunk.rejected, (state, action) => {
+        state.orderRequest = false;
+        state.error = action.error.message || 'Не удалось загрузить заказ';
       });
   }
 });
