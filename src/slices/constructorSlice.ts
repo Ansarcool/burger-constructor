@@ -31,6 +31,10 @@ export const constructorSlice = createSlice({
         (i) => i.id !== action.payload
       );
     },
+    resetIngredients: (state) => {
+      state.bun = null;
+      state.ingredients = [];
+    },
     moveIngredientUp: (state, action: PayloadAction<number>) => {
       const index = action.payload;
 
@@ -59,6 +63,7 @@ export const {
   addIngredient,
   removeIngredients,
   moveIngredientUp,
-  moveIngredientDown
+  moveIngredientDown,
+  resetIngredients
 } = constructorSlice.actions;
 export default constructorSlice.reducer;

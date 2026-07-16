@@ -44,7 +44,7 @@ const App = () => {
   let refreshToken = localStorage.getItem('refreshToken');
   const createdOrder = useSelector((state: RootState) => state.createOrder);
   const user = useSelector((state: RootState) => state.auth.user);
-  const password = useSelector((state: RootState) => state.password);
+  const password = useSelector((state: RootState) => state.resetPassword);
   if (accessToken === 'undefined') {
     accessToken = null;
   }
