@@ -7,7 +7,19 @@ export type TRegisterUser = {
   name: string;
   password: string;
 };
-
+export type TEditProfile = {
+  accessToken: string;
+  name: string;
+  email: string;
+  password: string;
+};
+export type TEditProfileResponse = {
+  success: boolean;
+  user: {
+    name: string;
+    email: string;
+  };
+};
 export type TUser = {
   email: string;
   name: string;
@@ -27,6 +39,7 @@ export interface TResponse {
 }
 export type TNewOrderResponse = {
   success: boolean;
+  isLoading: boolean;
   order: {
     number: number;
   };
@@ -194,4 +207,21 @@ export function getUserOrders(accessToken: string): Promise<TOrdersData> {
   })
     .then((response) => response.json())
     .then((data: TOrdersData) => data);
+}
+export function editProfile({
+  accessToken,
+  email,
+  name,
+  password
+}: TEditProfile): Promise<TEditProfileResponse> {
+  return fetch(`${BASE_URL}/auth/user`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: accessToken
+    },
+    body: JSON.stringify({ email, name, password })
+  })
+    .then((response) => response.json())
+    .then((data: TEditProfileResponse) => data);
 }

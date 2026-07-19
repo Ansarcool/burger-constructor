@@ -1,6 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TOrder } from '@utils-types';
-import { getOrders, getOrderByNum, createOrderRequest } from '@api';
+import {
+  getOrders,
+  getOrderByNum,
+  createOrderRequest,
+  getUserOrders
+} from '@api';
 
 export const getOrdersThunk = createAsyncThunk('/orders/all', () =>
   getOrders()
@@ -9,8 +14,13 @@ export const getOrderByNumThunk = createAsyncThunk(
   'orders/getByNum',
   (orderId: number) => getOrderByNum(orderId)
 );
+export const getUserOrdersThunk = createAsyncThunk(
+  'orders/userOrders',
+  (accessToken: string) => getUserOrders(accessToken)
+);
 type TOrderState = {
   success: boolean;
+  userOrders: TOrder[];
   orders: TOrder[];
   total: number;
   totalToday: number;
@@ -22,6 +32,7 @@ type TOrderState = {
 
 const initialState: TOrderState = {
   success: false,
+  userOrders: [],
   orders: [],
   total: 0,
   totalToday: 0,
@@ -61,6 +72,17 @@ export const orderSlice = createSlice({
       .addCase(getOrderByNumThunk.rejected, (state, action) => {
         state.orderRequest = false;
         state.error = action.error.message || 'Не удалось загрузить заказ';
+      })
+      .addCase(getUserOrdersThunk.pending, (state) => {
+        state.userOrders = [];
+      })
+      .addCase(getUserOrdersThunk.fulfilled, (state, action) => {
+        state.userOrders = action.payload.orders;
+      })
+      .addCase(getUserOrdersThunk.rejected, (state, action) => {
+        state.userOrders = [];
+        state.error =
+          action.error.message || 'Не получилось найти историю заказов';
       });
   }
 });

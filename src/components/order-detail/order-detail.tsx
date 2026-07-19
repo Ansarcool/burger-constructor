@@ -5,10 +5,10 @@ import { RootState } from '../../services/store';
 
 export const OrderDetail: FC = () => {
   const orderRequest = useSelector(
-    (state: RootState) => state.order.orderRequest
+    (state: RootState) => state.createOrder.isLoading
   );
   const orderNumber = useSelector(
-    (state: RootState) => state.order.orderNumber
+    (state: RootState) => state.createOrder.order.number
   );
 
   if (orderRequest) {

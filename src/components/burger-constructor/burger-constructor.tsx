@@ -5,10 +5,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../services/store';
 import { createOrderRequestThunk } from '../../slices/createOrderSlice';
 import { resetIngredients } from '../../slices/constructorSlice';
+import { useNavigate } from 'react-router-dom';
 export const BurgerConstructor: FC = () => {
   /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
   const dispatch = useDispatch<AppDispatch>();
-
+  const navigate = useNavigate();
   const constructorItems = useSelector(
     (state: RootState) => state.burgerConstructor
   );
@@ -21,8 +22,12 @@ export const BurgerConstructor: FC = () => {
   const orderSuccess = useSelector(
     (state: RootState) => state.createOrder.success
   );
+  const user = useSelector((state: RootState) => state.auth.user);
   const accessToken = localStorage.getItem('accessToken');
   const onOrderClick = () => {
+    if (!user) {
+      navigate('/login', { replace: true });
+    }
     if (!constructorItems.bun || orderRequest || !accessToken) return;
 
     const ingredientsIds = [

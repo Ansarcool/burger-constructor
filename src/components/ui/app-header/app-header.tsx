@@ -3,6 +3,8 @@ import { Link, NavLink } from 'react-router-dom';
 import styles from './app-header.module.css';
 import { TAppHeaderUIProps } from './type';
 import { BurgerIcon, ListIcon, ProfileIcon } from '@ui-kit';
+import { RootState } from '../../../services/store';
+import { useSelector } from 'react-redux';
 
 export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName }) => (
   <header className={styles.header}>

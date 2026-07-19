@@ -9,6 +9,7 @@ export const createOrderRequestThunk = createAsyncThunk(
 );
 const initialState: TNewOrderResponse = {
   success: false,
+  isLoading: false,
   order: {
     number: 0
   },
@@ -28,14 +29,17 @@ export const createOrderSlice = createSlice({
     builder
       .addCase(createOrderRequestThunk.pending, (state) => {
         state.success = false;
+        state.isLoading = true;
       })
       .addCase(createOrderRequestThunk.fulfilled, (state, action) => {
         state.success = true;
+        state.isLoading = false;
         state.order.number = action.payload.order.number;
         state.name = action.payload.name;
       })
       .addCase(createOrderRequestThunk.rejected, (state) => {
         state.success = false;
+        state.isLoading = false;
       });
   }
 });

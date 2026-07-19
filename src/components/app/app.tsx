@@ -4,6 +4,7 @@ import {
   ForgotPassword,
   Login,
   NotFound404,
+  Profile,
   ProfileOrders,
   Register,
   ResetPassword
@@ -17,9 +18,7 @@ import {
   FeedInfo,
   IngredientDetails,
   Modal,
-  OrderInfo,
-  OrdersList,
-  ProfileMenu
+  OrderInfo
 } from '@components';
 import { getIngredientsThunk } from '../../slices/ingredientsSlice';
 import { AppDispatch, RootState } from '../../services/store';
@@ -42,7 +41,9 @@ const App = () => {
   const background = location.state?.background;
   let accessToken = localStorage.getItem('accessToken');
   let refreshToken = localStorage.getItem('refreshToken');
-  const createdOrder = useSelector((state: RootState) => state.createOrder);
+  const createdOrderSuccess = useSelector(
+    (state: RootState) => state.createOrder.success
+  );
   const user = useSelector((state: RootState) => state.auth.user);
   const password = useSelector((state: RootState) => state.resetPassword);
   if (accessToken === 'undefined') {
@@ -68,8 +69,8 @@ const App = () => {
   return (
     <div className={styles.app}>
       <AppHeader />
-      {createdOrder.success && (
-        <Modal title={'ЗАКАЗ'} onClose={handleCloseOrderModal}>
+      {createdOrderSuccess && (
+        <Modal title='' onClose={handleCloseOrderModal}>
           <OrderDetail />
         </Modal>
       )}
@@ -78,7 +79,7 @@ const App = () => {
         <Route path='/feed' element={<Feed />} />
         <Route
           path='/profile'
-          element={user ? <ProfileMenu /> : <Navigate to='/login' replace />}
+          element={user ? <Profile /> : <Navigate to='/login' replace />}
         />
         <Route
           path='/profile/orders'
@@ -118,7 +119,7 @@ const App = () => {
           <Route
             path='/feed/:id'
             element={
-              <Modal title='Детали ингредиента' onClose={handleCloseModal}>
+              <Modal title='Детали заказа' onClose={handleCloseModal}>
                 <OrderInfo />
               </Modal>
             }

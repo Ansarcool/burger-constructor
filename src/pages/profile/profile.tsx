@@ -1,12 +1,14 @@
 import { ProfileUI } from '@ui-pages';
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../services/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../services/store';
+import { editProfileThunk } from '../../slices/slice';
 
 export const Profile: FC = () => {
   /** TODO: взять переменную из стора */
   const user = useSelector((state: RootState) => state.auth.user);
-
+  const dispatch = useDispatch<AppDispatch>();
+  const accessToken = localStorage.getItem('accessToken');
   const [formValue, setFormValue] = useState({
     name: user?.name || '',
     email: user?.email || '',
@@ -28,6 +30,16 @@ export const Profile: FC = () => {
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
+    if (accessToken && accessToken !== 'undefined') {
+      dispatch(
+        editProfileThunk({
+          accessToken: accessToken,
+          name: formValue.name,
+          email: formValue.email,
+          password: formValue.password
+        })
+      );
+    }
   };
 
   const handleCancel = (e: SyntheticEvent) => {

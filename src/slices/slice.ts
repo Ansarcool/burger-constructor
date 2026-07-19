@@ -5,7 +5,9 @@ import {
   login,
   type TRegisterUser,
   type TUser,
-  type TLogin
+  type TLogin,
+  editProfile,
+  TEditProfile
 } from '@api';
 
 export const registerThunk = createAsyncThunk(
@@ -35,6 +37,10 @@ export const loginThunk = createAsyncThunk(
 export const getUserThunk = createAsyncThunk(
   'auth/user',
   (accessToken: string) => getUser(accessToken)
+);
+export const editProfileThunk = createAsyncThunk(
+  'auth/editProfile',
+  (data: TEditProfile) => editProfile(data)
 );
 type AuthState = {
   user?: TUser | null;
@@ -98,6 +104,17 @@ export const authSlice = createSlice({
         state.loading = false;
         state.error = 'Ошибка';
         state.user = null;
+      })
+      .addCase(editProfileThunk.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(editProfileThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.user;
+      })
+      .addCase(editProfileThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
       });
   }
 });
